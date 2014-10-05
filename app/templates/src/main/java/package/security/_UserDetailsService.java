@@ -33,12 +33,14 @@ public class UserDetailsService implements org.springframework.security.core.use
         log.debug("Authenticating {}", login);
         String lowercaseLogin = login.toLowerCase();
 
-        User userFromDatabase = userRepository.findOne(login);
+        User userFromDatabase = userRepository.findOne(lowercaseLogin);
         if (userFromDatabase == null) {
             throw new UsernameNotFoundException("User " + lowercaseLogin + " was not found in the database");
+        } else if (!userFromDatabase.getActivated()) {
+            throw new UserNotActivatedException("User " + lowercaseLogin + " was not activated");
         }
 
-        Collection<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
+        Collection<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         for (Authority authority : userFromDatabase.getAuthorities()) {
             GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(authority.getName());
             grantedAuthorities.add(grantedAuthority);

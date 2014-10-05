@@ -5,11 +5,15 @@ import <%=packageName%>.domain.<%= entityClass %>;
 import <%=packageName%>.repository.<%= entityClass %>Repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import javax.inject.Inject;<% if (javaVersion == '7') { %>
+import javax.servlet.http.HttpServletResponse;<% } %>
+import java.util.List;<% if (javaVersion == '8') { %>
+import java.util.Optional;<% } %>
 
 /**
  * REST controller for managing <%= entityClass %>.
@@ -28,7 +32,7 @@ public class <%= entityClass %>Resource {
      */
     @RequestMapping(value = "/rest/<%= entityInstance %>s",
             method = RequestMethod.POST,
-            produces = "application/json")
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public void create(@RequestBody <%= entityClass %> <%= entityInstance %>) {
         log.debug("REST request to save <%= entityClass %> : {}", <%= entityInstance %>);
@@ -40,7 +44,7 @@ public class <%= entityClass %>Resource {
      */
     @RequestMapping(value = "/rest/<%= entityInstance %>s",
             method = RequestMethod.GET,
-            produces = "application/json")
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public List<<%= entityClass %>> getAll() {
         log.debug("REST request to get all <%= entityClass %>s");
@@ -52,15 +56,20 @@ public class <%= entityClass %>Resource {
      */
     @RequestMapping(value = "/rest/<%= entityInstance %>s/{id}",
             method = RequestMethod.GET,
-            produces = "application/json")
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public <%= entityClass %> get(@PathVariable Long id, HttpServletResponse response) {
-        log.debug("REST request to get <%= entityClass %> : {}", id);
+    public ResponseEntity<<%= entityClass %>> get(@PathVariable <% if (databaseType == 'sql') { %>Long<% } %><% if (databaseType == 'nosql') { %>String<% } %> id<% if (javaVersion == '7') { %>, HttpServletResponse response<% } %>) {
+        log.debug("REST request to get <%= entityClass %> : {}", id);<% if (javaVersion == '8') { %>
+        return Optional.ofNullable(<%= entityInstance %>Repository.findOne(id))
+            .map(<%= entityInstance %> -> new ResponseEntity<>(
+                <%= entityInstance %>,
+                HttpStatus.OK))
+            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));<% } else { %>
         <%= entityClass %> <%= entityInstance %> = <%= entityInstance %>Repository.findOne(id);
         if (<%= entityInstance %> == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return <%= entityInstance %>;
+        return new ResponseEntity<>(<%= entityInstance %>, HttpStatus.OK);<% } %>
     }
 
     /**
@@ -68,9 +77,9 @@ public class <%= entityClass %>Resource {
      */
     @RequestMapping(value = "/rest/<%= entityInstance %>s/{id}",
             method = RequestMethod.DELETE,
-            produces = "application/json")
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public void delete(@PathVariable Long id, HttpServletResponse response) {
+    public void delete(@PathVariable <% if (databaseType == 'sql') { %>Long<% } %><% if (databaseType == 'nosql') { %>String<% } %> id) {
         log.debug("REST request to delete <%= entityClass %> : {}", id);
         <%= entityInstance %>Repository.delete(id);
     }

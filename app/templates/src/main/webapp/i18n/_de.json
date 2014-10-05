@@ -1,7 +1,7 @@
 {
     "global": {
-        "title": "JHipster",
-        "browsehappy": "Sie benutzen einen <strong>veralteten</strong> Browser. Bitte <a href=\"http://browsehappy.com/\">aktualisieren Sie Ihren Browser</a>, um die Benutzerfreundlichkeit zu erhöhen.",
+        "title": "<%= baseName %>",
+        "browsehappy": "Sie benutzen einen <strong>veralteten</strong> Browser. Bitte <a href=\"http://browsehappy.com/?locale=de/\">aktualisieren Sie Ihren Browser</a>, um die Benutzerfreundlichkeit zu erhöhen.",
         "menu": {
             "home": "Startseite",
             "account": {
@@ -11,26 +11,61 @@
                 "sessions": "Sitzungen",
                 "tracker": "User tracker",
                 "metrics": "Metriken",
+                "health": "Heath",
                 "logs": "Protokoll",
                 "audits": "Audits",
                 "login": "Anmelden",
-                "logout": "Abmelden"
+                "logout": "Abmelden",
+                "apidocs": "API",
+                "register": "Registrierung"
             },
             "admin": "Administration",
             "language": "Sprache"
         },
-        "language": {
-            "en": "Englisch",
-            "fr": "Französisch",
-            "de": "Deutsch"            
+        "form": {
+            "username": "Benutzername",
+            "username.placeholder": "Ihr Benutzername",
+            "newpassword": "Neues Passwort",
+            "newpassword.placeholder": "Neues Passwort",
+            "confirmpassword": "Neues Passwort bestätigen",
+            "confirmpassword.placeholder": "Bestätigen Sie ihr neues Passwort",
+            "email": "E-Mail Adresse",
+            "email.placeholder": "Ihre E-Mail Adresse"
+        },
+        "messages": {
+            "info": {
+                "authenticated": "Wenn Sie sich <a href=\"#/login\">anmelden</a> möchten, versuchen Sie es mit <br/>- Administrator (Name=\"admin\" und Passwort=\"admin\")<br/>- Benutzer (Name=\"user\" und Passwort=\"user\").",
+                "register": "Sie haben noch keinen Zugang? <a href=\"#/register\">Registrieren Sie sich</a>"
+            },
+            "error": {
+                "dontmatch": "Das bestätigte Passwort entspricht nicht dem neuen Passwort!"
+            },
+            "validate": {
+                "newpassword": {
+                    "required": "Ein neues Passwort wird benötigt.",
+                    "minlength": "Das neue Passwort muss mindestens 5 Zeichen lang sein",
+                    "maxlength": "Das neue Passwort darf nicht länger als 50 Zeichen sein",
+                    "strength": "Passwortstärke:"
+                },
+                "confirmpassword": {
+                    "required": "Sie müssen das Passwort bestätigen.",
+                    "minlength": "Das bestätigte Passwort muss mindestens 5 Zeichen lang sein",
+                    "maxlength": "Das bestätigte Passwort darf nicht länger als 50 Zeichen sein"
+                },
+                "email": {
+                    "required": "Ihre E-Mail Adresse wird benötigt.",
+                    "invalid": "Ihre E-Mail Adresse ist ungültig.",
+                    "minlength": "Ihre E-Mail Adresse muss mindestens 5 Zeichen lang sein",
+                    "maxlength": "Ihre E-Mail Adresse darf nicht länger als 50 Zeichen sein"
+                }
+            }
         }
     },
     "main": {
         "title": "Willkommen, Java Hipster!",
         "subtitle": "Dies ist Ihre Hauptseite",
         "logged": {
-            "message": "Sie sind als Benutzer \"{{username}}\" angemeldet.",
-            "authenticated": "Wenn Sie sich <a href=\"#/login\">anmelden</a> möchten, versuchen Sie es mit <br/>- Administrator (Name=\"admin\" und Passwort=\"admin\")<br/>- Benutzer (Name=\"user\" und Passwort=\"user\")."
+            "message": "Sie sind als Benutzer \"{{username}}\" angemeldet."
         },
         "question": "Wenn Sie Fragen zu JHipster haben:",
         "link": {
@@ -42,11 +77,36 @@
         "like": "Wenn Sie JHipster mögen, vergessen Sie nicht uns einen Stern zu geben auf",
         "github": "Github"
     },
+    "activate": {
+        "title": "Aktivierung",
+        "messages": {
+            "success": "<strong>Ihr Benutzer wurde aktiviert.</strong> Bitte <a href=\"#/login\">anmelden</a>.",
+            "error": "<strong>Ihr Benutzer konnte nicht aktiviert werden.</strong> Bitte benutzen Sie die Registrierungsmaske, um sich einzutragen."
+        }
+    },
+    "register": {
+        "title": "Registrierung",
+        "form": {
+            "button": "Registrieren"
+        },
+        "messages": {
+            "validate": {
+                "login": {
+                    "required": "Ihr Benutzername wird benötigt.",
+                    "minlength": "Ihr Benutzername muss mindestens 1 Zeichen lang sein",
+                    "maxlength": "Ihr Benutzername darf nicht länger als 50 Zeichen sein"
+                }
+            },
+            "success": "<strong>Registrierung gespeichert!</strong> Bitte überprüfen Sie ihre E-Mails für die Bestätigung.",
+            "error": {
+                "fail": "<strong>Registrierung fehlgeschlagen!</strong> Bitte versuchen Sie es später nochmal.",
+                "userexists": "<strong>Loginname bereits vergeben!</strong> Bitte wählen Sie einen anderen aus."
+            }
+        }
+    },
     "login": {
         "title": "Anmeldung",
         "form": {
-            "username": "Name",
-            "username.placeholder": "Ihr Name",
             "password": "Passwort",
             "password.placeholder": "Ihr Passwort",
             "rememberme": "Automatische Anmeldung",
@@ -65,8 +125,6 @@
             "firstname.placeholder": "Ihr Vorname",
             "lastname": "Nachname",
             "lastname.placeholder": "Ihr Nachname",
-            "email": "E-Mail Adresse",
-            "email.placeholder": "Ihre E-Mail Adresse",
             "button": "Speichern"
         },
         "messages": {
@@ -82,12 +140,6 @@
                     "required": "Ihr Nachname wird benötigt.",
                     "minlength": "Ihr Nachname muss mindestens 1 Zeichen lang sein",
                     "maxlength": "Ihr Nachname darf nicht länger als 50 Zeichen sein"
-                },
-                "email": {
-                    "required": "Ihre E-Mail Adresse wird benötigt.",
-                    "invalid": "Ihre E-Mail Adresse ist ungültig.",
-                    "minlength": "Ihre E-Mail Adresse muss mindestens 1 Zeichen lang sein",
-                    "maxlength": "Ihre E-Mail Adresse darf nicht länger als 50 Zeichen sein"
                 }
             }
         }
@@ -95,39 +147,20 @@
     "password": {
         "title": "Passwort für [<b>{{username}}</b>]",
         "form": {
-            "newpassword": "Neues Passwort",
-            "newpassword.placeholder": "Neues Passwort",
-            "confirmpassword": "Neues Passwort bestätigen",
-            "confirmpassword.placeholder": "Bestätigen Sie neues Passwort",
             "button": "Speichern"
         },
         "messages": {
-            "error": {
-                "global": "<strong>Es ist ein Fehler aufgetreten!</strong> Das Passwort konnte nicht geändert werden.",
-                "dontmatch" : "Das bestätigte Passwort entspricht nicht dem neuen Passwort!"
-            },
-            "success": "<strong>Passwort wurde geändert!</strong>",
-            "validate": {
-                "newpassword": {
-                    "required": "Ein neues Passwort wird benötigt.",
-                    "minlength": "Das neue Passwort muss mindestens 5 Zeichen lang sein",
-                    "maxlength": "Das neue Passwort darf nicht länger als 20 Zeichen sein"
-                },
-                "confirmpassword": {
-                    "required": "Sie müssen das Passwort bestätigen.",
-                    "minlength": "Das bestätigte Passwort muss mindestens 5 Zeichen lang sein",
-                    "maxlength": "Das bestätigte Passwort darf nicht länger als 20 Zeichen sein"
-                }
-            }
+            "error": "<strong>Es ist ein Fehler aufgetreten!</strong> Das Passwort konnte nicht geändert werden.",
+            "success": "<strong>Passwort wurde geändert!</strong>"
         }
     },
     "sessions": {
         "title": "Aktive Sitzungen für [<b>{{username}}</b>]",
         "table": {
-            "ipaddress": "IP Addresse",
+            "ipaddress": "IP Adresse",
             "useragent": "User Agent",
             "date": "Datum",
-            "button": "Schliessen"
+            "button": "Schließen"
         },
         "messages": {
             "success": "<strong>Sitzung wurde geschlossen!</strong>",
@@ -136,23 +169,19 @@
 
     },
     "tracker": {
-        "title": "Real-time user activities",
+        "title": "Echtzeit Benutzer-Aktivitäten",
         "table": {
-            "userlogin": "User",
-            "ipaddress": "IP Address",
+            "userlogin": "Benutzer",
+            "ipaddress": "IP Adresse",
             "userAgent": "User agent",
-            "page": "Current page",
-            "time": "Time"
+            "page": "Aktuelle Seite",
+            "time": "Zeit"
         }
     },
     "metrics": {
         "title": "Anwendungs-Metriken",
         "refresh.button": "Aktualisieren",
-        "health": {
-            "title": "Heath checks",
-            "database": "Database: ",
-            "email": "Email: "
-        },
+        "updating": "Aktualisierung...",
         "jvm": {
             "title": "JVM Metriken",
             "memory": {
@@ -163,10 +192,23 @@
             },
             "threads": {
                 "title": "Threads",
+                "all": "Alle",
                 "runnable": "Runnable",
-                "timewaiting": "Wartezeit",
+                "timedwaiting": "Wartezeit",
                 "waiting": "Wartend",
-                "blocked": "Geblockt"
+                "blocked": "Geblockt",
+                "dump": {
+                    "title": "Threads dump",
+                    "id": "Id: ",
+                    "blockedtime": "Blocked Time",
+                    "blockedcount": "Blocked Count",
+                    "waitedtime": "Waited Time",
+                    "waitedcount": "Waited Count",
+                    "lockname": "Lock name",
+                    "stacktrace": "Stacktrace",
+                    "show": "Show",
+                    "hide": "Hide"
+                }
             },
             "gc": {
                 "title": "Speicherbereinigung (GC)",
@@ -216,6 +258,24 @@
             "mean": "Durchschnittliche Zugriffszeit (ms)"
         }
     },
+    "health": {
+        "title": "Heath checks",
+        "refresh.button": "Aktualisieren",
+        "stacktrace": "Stacktrace",
+        "indicator": {
+            "db": "Datenbank",
+            "mail": "Email",
+            "mongo": "Mongo"
+        },
+        "table": {
+            "service": "Dienst Name",
+            "status": "Status"
+        },
+        "status": {
+            "UP": "UP",
+            "DOWN": "DOWN"
+        }
+    },
     "logs": {
         "title": "Protokolle",
         "nbloggers": "Es existieren {{ total }} Logger.",
@@ -229,8 +289,8 @@
         "title": "Audits",
         "filter": {
             "title": "Nach Datum filtern",
-            "from": "aus",
-            "to": "zu",
+            "from": "von",
+            "to": "bis",
             "button": {
                 "weeks": "Wochen",
                 "today": "heute",
@@ -249,6 +309,10 @@
                 "remoteAddress": "Remote-Adresse:"
             }
         }
+    },
+    "errors": {
+        "title": "Fehlerseite!",
+        "403": "Sie haben nicht die nötigen Berechtigungen diese Seite anzuzeigen."
     },
     "footer": "Dies ist Ihre Fußzeile"
 }

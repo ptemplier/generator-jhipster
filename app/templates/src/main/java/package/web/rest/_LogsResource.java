@@ -6,10 +6,12 @@ import com.codahale.metrics.annotation.Timed;
 import <%=packageName%>.web.rest.dto.LoggerDTO;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
+<% if (javaVersion != '8') { %>
+import java.util.ArrayList;<% } %>
+import java.util.List;<% if (javaVersion == '8') { %>
+import java.util.stream.Collectors;<% } %>
 
 /**
  * Controller for view and managing Log Level at runtime.
@@ -20,16 +22,20 @@ public class LogsResource {
 
     @RequestMapping(value = "/rest/logs",
             method = RequestMethod.GET,
-            produces = "application/json")
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     public List<LoggerDTO> getList() {
-        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-
-        List<LoggerDTO> loggers = new ArrayList<LoggerDTO>();
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();<% if (javaVersion == '8') { %>
+        return context.getLoggerList()
+            .stream()
+            .map(LoggerDTO::new)
+            .collect(Collectors.toList());
+        <% } else { %>
+        List<LoggerDTO> loggers = new ArrayList<>();
         for (ch.qos.logback.classic.Logger logger : context.getLoggerList()) {
             loggers.add(new LoggerDTO(logger));
         }
-        return loggers;
+        return loggers;<% } %>
     }
 
     @RequestMapping(value = "/rest/logs",

@@ -1,7 +1,7 @@
 {
     "global": {
-        "title": "JHipster",
-        "browsehappy": "Vous utilisez un <strong>ancien</strong> navigateur. Veuillez <a href=\"http://browsehappy.com/\">mettre à jour votre navigateur</a> pour une meilleure expérience.",
+        "title": "<%= baseName %>",
+        "browsehappy": "Vous utilisez un <strong>ancien</strong> navigateur. Veuillez <a href=\"http://browsehappy.com/?locale=fr\">mettre à jour votre navigateur</a> pour une meilleure expérience.",
         "menu": {
             "home": "Accueil",
             "account": {
@@ -11,29 +11,61 @@
                 "sessions": "Sessions",
                 "tracker": "Suivi des utilisateurs",
                 "metrics": "Métriques",
+                "health": "Diagnostics",
                 "logs": "Logs",
                 "audits": "Audits",
                 "login": "S'authentifier",
-                "logout": "Déconnexion"
+                "logout": "Déconnexion",
+                "apidocs": "API",
+                "register": "Créer un compte"
             },
             "admin": "Administration",
             "language": "Langue"
         },
-        "language": {
-            "en": "Anglais",
-            "fr": "Français",
-            "de": "Allemand"
+        "form": {
+            "username": "Nom d'utilisateur",
+            "username.placeholder": "Votre nom d'utilisateur",
+            "newpassword": "Nouveau mot de passe",
+            "newpassword.placeholder": "Nouveau mot de passe",
+            "confirmpassword": "Confirmation du nouveau mot de passe",
+            "confirmpassword.placeholder": "Confirmation du nouveau mot de passe",
+            "email": "Email",
+            "email.placeholder": "Votre email"
+        },
+        "messages": {
+            "info": {
+                "authenticated": "Si vous voulez vous <a href=\"#/login\">connecter</a>, vous pouvez utiliser les comptes par défaut : <br/> - Administrateur (nom d'utilisateur=\"admin\" et mot de passe =\"admin\") <br/> - Utilisateur (nom d'utilisateur=\"user\" et mot de passe =\"user\").",
+                "register": "Vous n'avez pas encore de compte ? <a href=\"#/register\">Créer un compte</a>"
+            },
+            "error": {
+                "dontmatch": "Le nouveau mot de passe et sa confirmation ne sont pas égaux!"
+            },
+            "validate": {
+                "newpassword": {
+                    "required": "Votre mot de passe est requis.",
+                    "minlength": "Votre mot de passe doit comporter au moins 5 caractères",
+                    "maxlength": "Votre mot de passe ne doit pas comporter plus de 50 caractères",
+                    "strength": "Robustesse du mot de passe:"
+                },
+                "confirmpassword": {
+                    "required": "Votre confirmation du mot de passe est requis.",
+                    "minlength": "Votre confirmation du mot de passe doit comporter au moins 5 caractères",
+                    "maxlength": "Votre confirmation du mot de passe ne doit pas comporter plus de 50 caractères"
+                },
+                "email": {
+                    "required": "Votre email est requis.",
+                    "minlength": "Votre email doit comporter au moins 5 caractères",
+                    "maxlength": "Votre email ne doit pas comporter plus de 50 caractères",
+                    "invalid": "Votre email n'est pas valide."
+                }
+            }
         }
-    },
-    "index": {
-        "title": "index"
     },
     "main": {
         "title": "Bienvenue, Java Hipster !",
         "subtitle": "Ceci est votre page d'accueil",
         "logged": {
-            "message": "Vous êtes connecté en tant que \"{{username}}\".",
-            "authenticated": "Si vous voulez vous <a href=\"#/login\">connecter</a>, vous pouvez utiliser les comptes par défaut : <br/> - Administrateur (nom d'utilisateur=\"admin\" et mot de passe =\"admin\") <br/> - Utilisateur (nom d'utilisateur=\"user\" et mot de passe =\"user\")."
+            "message": "Vous êtes connecté en tant que \"{{username}}\"."
         },
         "question": "Si vous avez des questions à propos de JHipster:",
         "link": {
@@ -45,11 +77,36 @@
         "like": "Si vous aimez JHipster, donnez nous une étoile sur",
         "github": "Github"
     },
+    "activate": {
+        "title": "Activation",
+        "messages": {
+            "success": "<strong>Votre compte utilisateur a été activé.</strong> Merci de vous <a href=\"#/login\">authentifier</a>.",
+            "error": "<strong>Votre compte utilisateur n'a pas pu être activé.</strong> Utilisez le formulaire d'enregistrement pour en créer un nouveau."
+        }
+    },
+    "register": {
+        "title": "Création de compte utilisateur",
+        "form": {
+            "button": "Enregistrement"
+        },
+        "messages": {
+            "validate": {
+                "login": {
+                    "required": "Votre nom d'utilisateur est obligatoire.",
+                    "minlength": "Votre nom d'utilisateur doit contenir plus d'un caractère",
+                    "maxlength": "Votre nom d'utilisateur ne peut pas contenir plus de 50 caractères"
+                }
+            },
+            "success": "<strong>Compte enregistré !</strong> Merci de vérifier votre e-mail de confirmation.",
+            "error": {
+                "fail": "<strong>Compte non créé!</strong> Merci d'essayer à nouveau plus tard.",
+                "userexists": "<strong>Ce compte utilisateur existe déjà !</strong> Veuillez en choisir un autre."
+            }
+        }
+    },
     "login": {
         "title": "Authentification",
         "form": {
-            "username": "Nom d'utilisateur",
-            "username.placeholder": "Votre nom d'utilisateur",
             "password": "Mot de passe",
             "password.placeholder": "Votre mot de passe",
             "rememberme": "Garder la session ouverte",
@@ -68,11 +125,9 @@
             "firstname.placeholder": "Votre prénom",
             "lastname": "Nom",
             "lastname.placeholder": "Votre nom",
-            "email": "Email",
-            "email.placeholder": "Votre email",
             "button": "Sauvegarder"
         },
-        "messages" : {
+        "messages": {
             "error": "<strong>Une erreur est survenue!</strong> Votre profil ne peut pas être sauvegardé.",
             "success": "<strong>Votre profil a été sauvegardé!</strong>",
             "validate": {
@@ -85,12 +140,6 @@
                     "required": "Votre nom est requis.",
                     "minlength": "Votre nom doit comporter au moins un caractère",
                     "maxlength": "Votre nom ne doit pas comporter plus de 50 caractères"
-                },
-                "email": {
-                    "required": "Votre email est requis.",
-                    "minlength": "Votre email doit comporter au moins un caractère",
-                    "maxlength": "Votre email ne doit pas comporter plus de 50 caractères",
-                    "invalid": "Votre email n'est pas valide."
                 }
             }
         }
@@ -98,30 +147,11 @@
     "password": {
         "title": "Changer le mot de passe pour [<b>{{username}}</b>]",
         "form": {
-            "newpassword": "Nouveau mot de passe",
-            "newpassword.placeholder": "Nouveau mot de passe",
-            "confirmpassword": "Confirmation du nouveau mot de passe",
-            "confirmpassword.placeholder": "Confirmation du nouveau mot de passe",
             "button": "Sauvegarder"
         },
         "messages": {
-            "error": {
-                "global": "<strong>Une erreur est survenue!</strong> Le mot de passe n'a pas pu être modifié.",
-                "dontmatch" : "Le nouveau mot de passe et sa confirmation ne sont pas égaux!"
-            },
-            "success": "<strong>La mot de passe a été modifié!</strong>",
-            "validate": {
-                "newpassword": {
-                    "required": "Votre mot de passe est requis.",
-                    "minlength": "Votre mot de passe doit comporter au moins 5 caractères",
-                    "maxlength": "Votre mot de passe ne doit pas comporter plus de 20 caractères"
-                },
-                "confirmpassword": {
-                    "required": "Votre confirmation du mot de passe est requis.",
-                    "minlength": "Votre confirmation du mot de passe doit comporter au moins 5 caractères",
-                    "maxlength": "Votre confirmation du mot de passe ne doit pas comporter plus de 20 caractères"
-                }
-            }
+            "error": "<strong>Une erreur est survenue!</strong> Le mot de passe n'a pas pu être modifié.",
+            "success": "<strong>La mot de passe a été modifié!</strong>"
         }
     },
     "sessions": {
@@ -150,11 +180,7 @@
     "metrics": {
         "title": "Métriques de l'application",
         "refresh.button": "Rafraichir",
-        "health": {
-            "title": "Diagnostics",
-            "database": "Base de données: ",
-            "email": "Email: "
-        },
+        "updating": "Mise à jour...",
         "jvm": {
             "title": "Métriques de la JVM",
             "memory": {
@@ -165,10 +191,23 @@
             },
             "threads": {
                 "title": "Threads",
+                "all": "Tous",
                 "runnable": "Executable",
-                "timewaiting": "Temps d'attente",
+                "timedwaiting": "Temps d'attente",
                 "waiting": "En attente",
-                "blocked": "Bloqué"
+                "blocked": "Bloqué",
+                "dump": {
+                    "title": "Threads dump",
+                    "id": "Id :",
+                    "blockedtime": "Temps bloqué",
+                    "blockedcount": "Nb fois bloqué",
+                    "waitedtime": "Temps d'attente",
+                    "waitedcount": "Nb fois en attente",
+                    "lockname": "Nom du process bloquant",
+                    "stacktrace": "Stacktrace",
+                    "show": "Afficher",
+                    "hide": "Cacher"
+                }
             },
             "gc": {
                 "title": "Garbage collections",
@@ -218,6 +257,24 @@
             "mean": "Temps de réponse (ms)"
         }
     },
+    "health": {
+        "title": "Diagnostics",
+        "refresh.button": "Rafraichir",
+        "indicator": {
+            "db": "Base de données",
+            "mail": "Email",
+            "mongo": "Mongo DB"
+        },
+        "stacktrace": "Stacktrace",
+        "table": {
+            "service": "Nom du service",
+            "status": "Etat"
+        },
+        "status": {
+            "UP": "DISPONIBLE",
+            "DOWN": "HORS SERVICE"
+        }
+    },
     "logs": {
         "title": "Logs",
         "nbloggers": "Total de {{ total }} \"loggers\".",
@@ -251,6 +308,10 @@
                 "remoteAddress": "Adresse Distante :"
             }
         }
+    },
+    "errors": {
+        "title": "Page d'erreur!",
+        "403": "Vous n'avez pas les droits pour accéder à cette page."
     },
     "footer": "Ceci est votre pied de page"
 }

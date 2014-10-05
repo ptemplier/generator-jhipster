@@ -2,51 +2,45 @@
 
 /* Controllers */
 
-<%= angularAppName %>.controller('MainController', ['$scope',
-    function ($scope) {
-    }]);
+<%= angularAppName %>.controller('MainController', function ($scope) {
+    });
 
-<%= angularAppName %>.controller('AdminController', ['$scope',
-    function ($scope) {
-    }]);
+<%= angularAppName %>.controller('AdminController', function ($scope) {
+    });
 
-<%= angularAppName %>.controller('LanguageController', ['$scope', '$translate',
-    function ($scope, $translate) {
+<%= angularAppName %>.controller('LanguageController', function ($scope, $translate, LanguageService) {
         $scope.changeLanguage = function (languageKey) {
             $translate.use(languageKey);
+
+            LanguageService.getBy(languageKey).then(function(languages) {
+                $scope.languages = languages;
+            });
         };
-    }]);
 
-<%= angularAppName %>.controller('MenuController', ['$scope',
-    function ($scope) {
-    }]);
+        LanguageService.getBy().then(function (languages) {
+            $scope.languages = languages;
+        });
+    });
 
-<%= angularAppName %>.controller('LoginController', ['$scope', '$location', 'AuthenticationSharedService',
-    function ($scope, $location, AuthenticationSharedService) {
+<%= angularAppName %>.controller('MenuController', function ($scope) {
+    });
+
+<%= angularAppName %>.controller('LoginController', function ($scope, $location, AuthenticationSharedService) {
         $scope.rememberMe = true;
         $scope.login = function () {
             AuthenticationSharedService.login({
                 username: $scope.username,
                 password: $scope.password,
-                rememberMe: $scope.rememberMe,
-                success: function () {
-                    $location.path('');
-                }
-            })
+                rememberMe: $scope.rememberMe
+            });
         }
-    }]);
+    });
 
-<%= angularAppName %>.controller('LogoutController', ['$location', 'AuthenticationSharedService',
-    function ($location, AuthenticationSharedService) {
-        AuthenticationSharedService.logout({
-            success: function () {
-                $location.path('');
-            }
-        });
-    }]);
+<%= angularAppName %>.controller('LogoutController', function ($location, AuthenticationSharedService) {
+        AuthenticationSharedService.logout();
+    });
 
-<%= angularAppName %>.controller('SettingsController', ['$scope', 'Account',
-    function ($scope, Account) {
+<%= angularAppName %>.controller('SettingsController', function ($scope, Account) {
         $scope.success = null;
         $scope.error = null;
         $scope.settingsAccount = Account.get();
@@ -63,10 +57,53 @@
                     $scope.error = "ERROR";
                 });
         };
-    }]);
+    });
 
-<%= angularAppName %>.controller('PasswordController', ['$scope', 'Password',
-    function ($scope, Password) {
+<%= angularAppName %>.controller('RegisterController', function ($scope, $translate, Register) {
+        $scope.success = null;
+        $scope.error = null;
+        $scope.doNotMatch = null;
+        $scope.errorUserExists = null;
+        $scope.register = function () {
+            if ($scope.registerAccount.password != $scope.confirmPassword) {
+                $scope.doNotMatch = "ERROR";
+            } else {
+                $scope.registerAccount.langKey = $translate.use();
+                $scope.doNotMatch = null;
+                Register.save($scope.registerAccount,
+                    function (value, responseHeaders) {
+                        $scope.error = null;
+                        $scope.errorUserExists = null;
+                        $scope.success = 'OK';
+                    },
+                    function (httpResponse) {
+                        $scope.success = null;
+                        if (httpResponse.status === 304 &&
+                                httpResponse.data.error && httpResponse.data.error === "Not Modified") {
+                            $scope.error = null;
+                            $scope.errorUserExists = "ERROR";
+                        } else {
+                            $scope.error = "ERROR";
+                            $scope.errorUserExists = null;
+                        }
+                    });
+            }
+        }
+    });
+
+<%= angularAppName %>.controller('ActivationController', function ($scope, $routeParams, Activate) {
+        Activate.get({key: $routeParams.key},
+            function (value, responseHeaders) {
+                $scope.error = null;
+                $scope.success = 'OK';
+            },
+            function (httpResponse) {
+                $scope.success = null;
+                $scope.error = "ERROR";
+            });
+    });
+
+<%= angularAppName %>.controller('PasswordController', function ($scope, Password) {
         $scope.success = null;
         $scope.error = null;
         $scope.doNotMatch = null;
@@ -86,10 +123,9 @@
                     });
             }
         };
-    }]);
+    });
 
-<%= angularAppName %>.controller('SessionsController', ['$scope', 'resolvedSessions', 'Sessions',
-    function ($scope, resolvedSessions, Sessions) {
+<%= angularAppName %>.controller('SessionsController', function ($scope, resolvedSessions, Sessions) {
         $scope.success = null;
         $scope.error = null;
         $scope.sessions = resolvedSessions;
@@ -105,10 +141,9 @@
                     $scope.error = "ERROR";
                 });
         };
-    }]);
+    });
 
- <% if (websocket == 'atmosphere') { %><%= angularAppName %>.controller('TrackerController', ['$scope',
-    function ($scope) {
+ <% if (websocket == 'atmosphere') { %><%= angularAppName %>.controller('TrackerController', <% if (authenticationType == 'token') { %>['AccessToken'], <% } %>function ($scope<% if (authenticationType == 'token') { %>, AccessToken<% } %>) {
         // This controller uses the Atmosphere framework to keep a Websocket connection opened, and receive
         // user activities in real-time.
 
@@ -117,7 +152,7 @@
         $scope.trackerSubSocket;
         $scope.trackerTransport = 'websocket';
 
-        $scope.trackerRequest = { url: 'websocket/tracker',
+        $scope.trackerRequest = { url: 'websocket/tracker<% if (authenticationType == 'token') { %>?access_token=' + AccessToken.get()<% } else { %>'<% } %>,
             contentType : "application/json",
             transport : $scope.trackerTransport ,
             trackMessageLength : true,
@@ -135,7 +170,7 @@
             var activity = atmosphere.util.parseJSON(message);
             var existingActivity = false;
             for (var index = 0; index < $scope.activities.length; index++) {
-                if($scope.activities[index].sessionId == activity.sessionId) {
+                if($scope.activities[index].uuid == activity.uuid) {
                     existingActivity = true;
                     if (activity.page == "logout") {
                         $scope.activities.splice(index, 1);
@@ -151,21 +186,53 @@
         };
 
         $scope.trackerSubSocket = $scope.trackerSocket.subscribe($scope.trackerRequest);
-    }]);
+    });
 
-<% } %><%= angularAppName %>.controller('MetricsController', ['$scope', 'resolvedMetrics', 'HealthCheckService',
-    function ($scope, resolvedMetrics, HealthCheckService) {
-        $scope.metrics = resolvedMetrics;
+<% } %><%= angularAppName %>.controller('HealthController', function ($scope, HealthCheckService) {
+     $scope.updatingHealth = true;
 
-        HealthCheckService.check().then(function(data) {
-            $scope.healthCheck = data;
-        });
+     $scope.refresh = function() {
+         $scope.updatingHealth = true;
+         HealthCheckService.check().then(function(promise) {
+             $scope.healthCheck = promise;
+             $scope.updatingHealth = false;
+         },function(promise) {
+             $scope.healthCheck = promise.data;
+             $scope.updatingHealth = false;
+         });
+     }
 
-        resolvedMetrics.$get({}, function(items) {
-            $scope.servicesStats = {};
+     $scope.refresh();
+
+     $scope.getLabelClass = function(statusState) {
+         if (statusState == 'UP') {
+             return "label-success";
+         } else {
+             return "label-danger";
+         }
+     }
+ });
+
+<%= angularAppName %>.controller('MetricsController', function ($scope, MetricsService, HealthCheckService, ThreadDumpService) {
+        $scope.metrics = {};
+		$scope.updatingMetrics = true;
+
+        $scope.refresh = function() {
+			$scope.updatingMetrics = true;
+			MetricsService.get().then(function(promise) {
+        		$scope.metrics = promise;
+				$scope.updatingMetrics = false;
+        	},function(promise) {
+        		$scope.metrics = promise.data;
+				$scope.updatingMetrics = false;
+        	});
+        };
+
+		$scope.$watch('metrics', function(newValue, oldValue) {
+			$scope.servicesStats = {};
             $scope.cachesStats = {};
-            angular.forEach(items.timers, function(value, key) {
-                if (key.indexOf("web.rest") != -1) {
+            angular.forEach(newValue.timers, function(value, key) {
+                if (key.indexOf("web.rest") != -1 || key.indexOf("service") != -1) {
                     $scope.servicesStats[key] = value;
                 }
 
@@ -180,13 +247,53 @@
                         'name': newKey.substr(index + 1),
                         'value': value
                     };
-                }
+                };
             });
-        });
-    }]);
+		});
 
-<%= angularAppName %>.controller('LogsController', ['$scope', 'resolvedLogs', 'LogsService',
-    function ($scope, resolvedLogs, LogsService) {
+        $scope.refresh();
+
+        $scope.threadDump = function() {
+            ThreadDumpService.dump().then(function(data) {
+                $scope.threadDump = data;
+
+                $scope.threadDumpRunnable = 0;
+                $scope.threadDumpWaiting = 0;
+                $scope.threadDumpTimedWaiting = 0;
+                $scope.threadDumpBlocked = 0;
+
+                angular.forEach(data, function(value, key) {
+                    if (value.threadState == 'RUNNABLE') {
+                        $scope.threadDumpRunnable += 1;
+                    } else if (value.threadState == 'WAITING') {
+                        $scope.threadDumpWaiting += 1;
+                    } else if (value.threadState == 'TIMED_WAITING') {
+                        $scope.threadDumpTimedWaiting += 1;
+                    } else if (value.threadState == 'BLOCKED') {
+                        $scope.threadDumpBlocked += 1;
+                    }
+                });
+
+                $scope.threadDumpAll = $scope.threadDumpRunnable + $scope.threadDumpWaiting +
+                    $scope.threadDumpTimedWaiting + $scope.threadDumpBlocked;
+
+            });
+        };
+
+        $scope.getLabelClass = function(threadState) {
+            if (threadState == 'RUNNABLE') {
+                return "label-success";
+            } else if (threadState == 'WAITING') {
+                return "label-info";
+            } else if (threadState == 'TIMED_WAITING') {
+                return "label-warning";
+            } else if (threadState == 'BLOCKED') {
+                return "label-danger";
+            }
+        };
+    });
+
+<%= angularAppName %>.controller('LogsController', function ($scope, resolvedLogs, LogsService) {
         $scope.loggers = resolvedLogs;
 
         $scope.changeLevel = function (name, level) {
@@ -194,10 +301,9 @@
                 $scope.loggers = LogsService.findAll();
             });
         }
-    }]);
+    });
 
-<%= angularAppName %>.controller('AuditsController', ['$scope', '$translate', '$filter', 'AuditsService',
-    function ($scope, $translate, $filter, AuditsService) {
+<%= angularAppName %>.controller('AuditsController', function ($scope, $translate, $filter, AuditsService) {
         $scope.onChangeDate = function() {
             AuditsService.findByDates($scope.fromDate, $scope.toDate).then(function(data){
                 $scope.audits = data;
@@ -226,9 +332,8 @@
 
         $scope.today();
         $scope.previousMonth();
-        
+
         AuditsService.findByDates($scope.fromDate, $scope.toDate).then(function(data){
             $scope.audits = data;
         });
-    }]);
-
+    });

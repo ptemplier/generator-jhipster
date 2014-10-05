@@ -32,9 +32,6 @@ public class MailConfiguration implements EnvironmentAware {
 
     private RelaxedPropertyResolver propertyResolver;
 
-    public MailConfiguration() {
-    }
-
     @Override
     public void setEnvironment(Environment environment) {
         this.propertyResolver = new RelaxedPropertyResolver(environment, ENV_SPRING_MAIL);

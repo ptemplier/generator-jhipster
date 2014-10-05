@@ -43,10 +43,10 @@ import <%=packageName%>.repository.<%= entityClass %>Repository;
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class })
-@ActiveProfiles("dev")
 public class <%= entityClass %>ResourceTest {
-	
-    private static final Long DEFAULT_ID = new Long(1L);
+    <% if (databaseType == 'sql') { %>
+    private static final Long DEFAULT_ID = new Long(1L);<% } %><% if (databaseType == 'nosql') { %>
+    private static final String DEFAULT_ID = "1";<% } %>
 
     private static final LocalDate DEFAULT_SAMPLE_DATE_ATTR = new LocalDate(0L);
 
@@ -60,7 +60,7 @@ public class <%= entityClass %>ResourceTest {
     private <%= entityClass %>Repository <%= entityInstance %>Repository;
 
     private MockMvc rest<%= entityClass %>MockMvc;
-    
+
     private <%= entityClass %> <%= entityInstance %>;
 
     @Before
@@ -73,51 +73,53 @@ public class <%= entityClass %>ResourceTest {
 
         <%= entityInstance %> = new <%= entityClass %>();
         <%= entityInstance %>.setId(DEFAULT_ID);
-    	<%= entityInstance %>.setSampleDateAttribute(DEFAULT_SAMPLE_DATE_ATTR);
-    	<%= entityInstance %>.setSampleTextAttribute(DEFAULT_SAMPLE_TEXT_ATTR);
+        <%= entityInstance %>.setSampleDateAttribute(DEFAULT_SAMPLE_DATE_ATTR);
+        <%= entityInstance %>.setSampleTextAttribute(DEFAULT_SAMPLE_TEXT_ATTR);
     }
 
     @Test
     public void testCRUD<%= entityClass %>() throws Exception {
 
-    	// Create <%= entityClass %>
-    	rest<%= entityClass %>MockMvc.perform(post("/app/rest/<%= entityInstance %>s")
-    			.contentType(TestUtil.APPLICATION_JSON_UTF8)
+        // Create <%= entityClass %>
+        rest<%= entityClass %>MockMvc.perform(post("/app/rest/<%= entityInstance %>s")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(<%= entityInstance %>)))
                 .andExpect(status().isOk());
 
-    	// Read <%= entityClass %>
-    	rest<%= entityClass %>MockMvc.perform(get("/app/rest/<%= entityInstance %>s/{id}", DEFAULT_ID))
+        // Read <%= entityClass %>
+        rest<%= entityClass %>MockMvc.perform(get("/app/rest/<%= entityInstance %>s/{id}", DEFAULT_ID))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(DEFAULT_ID.intValue()))
-    			.andExpect(jsonPath("$.sampleDateAttribute").value(DEFAULT_SAMPLE_DATE_ATTR.toString()))
-    			.andExpect(jsonPath("$.sampleTextAttribute").value(DEFAULT_SAMPLE_TEXT_ATTR));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))<% if (databaseType == 'sql') { %>
+                .andExpect(jsonPath("$.id").value(DEFAULT_ID.intValue()))<% } %><% if (databaseType == 'nosql') { %>
+                .andExpect(jsonPath("$.id").value(DEFAULT_ID))<% } %>
+                .andExpect(jsonPath("$.sampleDateAttribute").value(DEFAULT_SAMPLE_DATE_ATTR.toString()))
+                .andExpect(jsonPath("$.sampleTextAttribute").value(DEFAULT_SAMPLE_TEXT_ATTR));
 
-    	// Update <%= entityClass %>
-    	<%= entityInstance %>.setSampleDateAttribute(UPD_SAMPLE_DATE_ATTR);
-    	<%= entityInstance %>.setSampleTextAttribute(UPD_SAMPLE_TEXT_ATTR);
-  
-    	rest<%= entityClass %>MockMvc.perform(post("/app/rest/<%= entityInstance %>s")
-    			.contentType(TestUtil.APPLICATION_JSON_UTF8)
+        // Update <%= entityClass %>
+        <%= entityInstance %>.setSampleDateAttribute(UPD_SAMPLE_DATE_ATTR);
+        <%= entityInstance %>.setSampleTextAttribute(UPD_SAMPLE_TEXT_ATTR);
+
+        rest<%= entityClass %>MockMvc.perform(post("/app/rest/<%= entityInstance %>s")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(<%= entityInstance %>)))
                 .andExpect(status().isOk());
 
-    	// Read updated <%= entityClass %>
-    	rest<%= entityClass %>MockMvc.perform(get("/app/rest/<%= entityInstance %>s/{id}", DEFAULT_ID))
+        // Read updated <%= entityClass %>
+        rest<%= entityClass %>MockMvc.perform(get("/app/rest/<%= entityInstance %>s/{id}", DEFAULT_ID))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(DEFAULT_ID.intValue()))
-    			.andExpect(jsonPath("$.sampleDateAttribute").value(UPD_SAMPLE_DATE_ATTR.toString()))
-    			.andExpect(jsonPath("$.sampleTextAttribute").value(UPD_SAMPLE_TEXT_ATTR));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))<% if (databaseType == 'sql') { %>
+                .andExpect(jsonPath("$.id").value(DEFAULT_ID.intValue()))<% } %><% if (databaseType == 'nosql') { %>
+                .andExpect(jsonPath("$.id").value(DEFAULT_ID))<% } %>
+                .andExpect(jsonPath("$.sampleDateAttribute").value(UPD_SAMPLE_DATE_ATTR.toString()))
+                .andExpect(jsonPath("$.sampleTextAttribute").value(UPD_SAMPLE_TEXT_ATTR));
 
-    	// Delete <%= entityClass %>
-    	rest<%= entityClass %>MockMvc.perform(delete("/app/rest/<%= entityInstance %>s/{id}", DEFAULT_ID)
+        // Delete <%= entityClass %>
+        rest<%= entityClass %>MockMvc.perform(delete("/app/rest/<%= entityInstance %>s/{id}", DEFAULT_ID)
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
-    	// Read nonexisting <%= entityClass %>
-    	rest<%= entityClass %>MockMvc.perform(get("/app/rest/<%= entityInstance %>s/{id}", DEFAULT_ID)
+        // Read nonexisting <%= entityClass %>
+        rest<%= entityClass %>MockMvc.perform(get("/app/rest/<%= entityInstance %>s/{id}", DEFAULT_ID)
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound());
 
